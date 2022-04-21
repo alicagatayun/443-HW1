@@ -9,11 +9,17 @@
 *.iws
 workspace.xml
 tasks.xml
+code.iml
+modules.xml
+vcs.xml
+./out
+out
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 /.idea
 ./.idea
 .idea
+
 # Package Files #
 *.jar
 *.war
