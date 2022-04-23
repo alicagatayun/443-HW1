@@ -81,12 +81,12 @@ public class Corporation extends Entity {
     private final Font boldFont = new Font("Verdana", Font.BOLD, 20);
     @Override
     public void draw(Graphics2D g2d) {
+        Position pos;
         switch (currentState){
             case Rest:
                 _restState.getNextMove(position);
                 break;
             case Shake:
-                Position pos;
                 pos = _shakeState.getNextMove(position);
                 position.setX(pos.getIntX());
                 position.setY(pos.getIntY());
@@ -95,7 +95,12 @@ public class Corporation extends Entity {
                 _chaseClosestState.getNextMove(position);
                 break;
             case GotoXY:
-                _gotoXYState.getNextMove(position);
+                pos = _gotoXYState.getNextMove(position);
+                position.setX(pos.getIntX());
+                position.setY(pos.getIntY());
+                if(_gotoXYState.IsReachedDestination())
+                    pickAnotherState();
+
                 break;
         }
         g2d.setColor(Color.BLACK);
@@ -122,11 +127,16 @@ public class Corporation extends Entity {
         Random rnd = new Random();
         currentState = States.values()[(int)(Math.random()*States.values().length)];
         System.out.println(currentState);
+        if(currentState==States.GotoXY){
+            _gotoXYState.setRandomSpeed();
+            _gotoXYState.setPrevVals(position);
+        }
     }
     @Override
     public void step() {
         //Burada state'e geçebilir miyim diye soracağız. eğer isAllowedsa random bir state'e geçeceğiz.
         pickAnotherState();
+
 
     }
     // TODO

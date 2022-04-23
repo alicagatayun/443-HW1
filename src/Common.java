@@ -225,7 +225,6 @@ public class Common {
         if (randomGenerator.nextInt(400) == 0) goldPrice.step();
         for(int i = 0;i<corporation.size();i++){
             if (randomGenerator.nextInt(i+600) == 0) corporation.get(i).step();
-
         }
 
 
