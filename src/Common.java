@@ -15,9 +15,11 @@ public class Common {
     private static final int secondVerticalLineX = 1250;
     private static final int horizontalLineY = 100;
 
-    private static final int firstCountryPointX = 100;
+    private static final int firstCountryPointX = 175;
     private static final int firstCountryPointY = 650;
 
+    private static final int initialCorporationPointX = 125;
+    private static final int initialCorporationPointY = 300;
 
     private static final Random randomGenerator = new Random(1234);
 
@@ -66,6 +68,25 @@ public class Common {
         return goldPrice;
     }
 
+    public static int getInitialCorporationPointX() {
+        return initialCorporationPointX;
+    }
+
+    public static int getInitialCorporationPointY() {
+        return initialCorporationPointY;
+    }
+
+    public static List<Corporation> getAllCorporation() {
+        return corporation;
+    }
+
+    private static final List<Corporation> corporation = setCorporation();
+
+    public static Corporation getCorporationInformation(int index) {
+        return corporation.get(index);
+    }
+
+
     public static int getFirstCountryPointX() {
         return firstCountryPointX;
     }
@@ -73,9 +94,11 @@ public class Common {
     public static int getFirstCountryPointY() {
         return firstCountryPointY;
     }
-    public static List<Country> getAllCountry(){
+
+    public static List<Country> getAllCountry() {
         return country;
     }
+
     private static final List<Country> country = setCountry();
 
     public static Country getCountryInformation(int index) {
@@ -96,37 +119,37 @@ public class Common {
             parts = file.getName().split("\\.");
             Country tempCountry = new Country(getFirstCountryPointX() + i, getFirstCountryPointY(), img
                     , "Chile", 8750, 5000, 50, 50.0);
-            i += 300;
+            i += 260;
             _countries.add(tempCountry);
 
-             img = ImageIO.read(new File(file2.toURI()));
-             parts = file2.getName().split("\\.");
-             tempCountry = new Country(getFirstCountryPointX() + i, getFirstCountryPointY(), img
+            img = ImageIO.read(new File(file2.toURI()));
+            parts = file2.getName().split("\\.");
+            tempCountry = new Country(getFirstCountryPointX() + i, getFirstCountryPointY(), img
                     , "Malaysia", 8750, 5000, 50, 50.0);
-            i += 300;
+            i += 260;
             _countries.add(tempCountry);
 
-             img = ImageIO.read(new File(file3.toURI()));
+            img = ImageIO.read(new File(file3.toURI()));
             parts = file3.getName().split("\\.");
-             tempCountry = new Country(getFirstCountryPointX() + i, getFirstCountryPointY(), img
+            tempCountry = new Country(getFirstCountryPointX() + i, getFirstCountryPointY(), img
                     , "Mexico", 8750, 5000, 50, 50.0);
-            i += 300;
+            i += 260;
             _countries.add(tempCountry);
 
 
-             img = ImageIO.read(new File(file4.toURI()));
+            img = ImageIO.read(new File(file4.toURI()));
             parts = file4.getName().split("\\.");
-             tempCountry = new Country(getFirstCountryPointX() + i, getFirstCountryPointY(), img
+            tempCountry = new Country(getFirstCountryPointX() + i, getFirstCountryPointY(), img
                     , "Nigeria", 8750, 5000, 50, 50.0);
-            i += 300;
+            i += 260;
 
             _countries.add(tempCountry);
 
-             img = ImageIO.read(new File(file5.toURI()));
+            img = ImageIO.read(new File(file5.toURI()));
             parts = file5.getName().split("\\.");
-             tempCountry = new Country(getFirstCountryPointX() + i, getFirstCountryPointY(), img
+            tempCountry = new Country(getFirstCountryPointX() + i, getFirstCountryPointY(), img
                     , "Poland", 8750, 5000, 50, 50.0);
-            i += 300;
+            i += 260;
 
             _countries.add(tempCountry);
 
@@ -138,9 +161,61 @@ public class Common {
 
 
     }
+    public static List<Corporation> setCorporation() {
+        int i = 0;
+        List<Corporation> _corporations = new ArrayList<>();
+        File file = new File("./images/lockheed_martin.png");
+        File file2 = new File("./images/raytheon.png");
+        File file3 = new File("./images/boeing.png");
+        File file4 = new File("./images/northrop_grumman.png");
+        File file5 = new File("./images/general_dynamics.png");
+        String[] parts;
+        try {
+            Image img = ImageIO.read(new File(file.toURI()));
+            Corporation tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
+                    , "LMT", 0);
+            i += 300;
+            _corporations.add(tempCorporation);
+
+            img = ImageIO.read(new File(file2.toURI()));
+            tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
+                    , "RTX", 0);
+            i += 300;
+            _corporations.add(tempCorporation);
+
+            img = ImageIO.read(new File(file3.toURI()));
+            tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
+                    , "BA", 0);
+            i += 300;
+            _corporations.add(tempCorporation);
+
+
+            img = ImageIO.read(new File(file4.toURI()));
+            tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
+                    , "NOC", 0);
+            i += 300;
+
+
+            _corporations.add(tempCorporation);
+
+            img = ImageIO.read(new File(file5.toURI()));
+            tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
+                    , "GD", 0);
+            i += 300;
+
+            _corporations.add(tempCorporation);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return _corporations;
+
+
+    }
 
     static {
-        // TODO: Here you can instantiate entities/fields
+        final List<Country> country = setCountry();
     }
 
 
@@ -148,6 +223,11 @@ public class Common {
         if (randomGenerator.nextInt(200) == 0) foodPrice.step();
         if (randomGenerator.nextInt(300) == 0) electronicsPrice.step();
         if (randomGenerator.nextInt(400) == 0) goldPrice.step();
+        for(int i = 0;i<corporation.size();i++){
+            if (randomGenerator.nextInt(i+50) == 0) corporation.get(i).step();
+
+        }
+
 
         // TODO: call other entities' step()
     }

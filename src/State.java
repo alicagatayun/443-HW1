@@ -1,3 +1,5 @@
 public abstract class State {
-    // TODO
+
+   public abstract Position getNextMove(Position _currentPosition);
+   public abstract Boolean IsAllowed();
 }

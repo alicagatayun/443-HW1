@@ -5,8 +5,9 @@ public class Country extends Entity {
     public Country(double x, double y) {
         super(x, y);
     }
-    private Font lightfont = new Font("Verdana", Font.PLAIN, 20);
-    private Font boldFont = new Font("Verdana", Font.BOLD, 20);
+
+    private final Font lightFont = new Font("Verdana", Font.PLAIN, 20);
+    private final Font boldFont = new Font("Verdana", Font.BOLD, 20);
     private Image countryImage;
     private String countryName;
     private int countryWorth;
@@ -78,23 +79,23 @@ public class Country extends Entity {
     public void draw(Graphics2D g2d) {
         g2d.setColor(Color.BLACK);
         g2d.setFont(boldFont);
-        g2d.drawString(countryName, getPosition().getIntX()+35, getPosition().getIntY()+170);
+        g2d.drawString(countryName, getPosition().getIntX() + 35, getPosition().getIntY() + 170);
 
         g2d.setColor(Color.BLUE);
-        g2d.setFont(lightfont);
-        g2d.drawString(String.format("%s: %d$", "Worth", countryWorth), position.getIntX(), position.getIntY()+194);
+        g2d.setFont(lightFont);
+        g2d.drawString(String.format("%s: %d$", "Worth", countryWorth), position.getIntX(), position.getIntY() + 194);
 
-        g2d.setColor(Color.GREEN);
-        g2d.setFont(lightfont);
-        g2d.drawString(String.format("%s: %d$", "Cash", countryCash), position.getIntX(), position.getIntY()+220);
+        g2d.setColor(new Color(0,100,0));
+        g2d.setFont(lightFont);
+        g2d.drawString(String.format("%s: %d$", "Cash", countryCash), position.getIntX(), position.getIntY() + 220);
 
         g2d.setColor(Color.YELLOW);
-        g2d.setFont(lightfont);
-        g2d.drawString(String.format("%s: %d$", "Gold", countryGold), position.getIntX(), position.getIntY()+246);
+        g2d.setFont(lightFont);
+        g2d.drawString(String.format("%s: %d$", "Gold", countryGold), position.getIntX(), position.getIntY() + 246);
 
-        g2d.setColor(Color.RED);
-        g2d.setFont(lightfont);
-        g2d.drawString(String.format("%s: %.1f$", "Happiness", countryCitizenHappiness), position.getIntX(), position.getIntY()+272);
+        g2d.setColor(new Color(180,0,0));
+        g2d.setFont(lightFont);
+        g2d.drawString(String.format("%s: %.1f$", "Happiness", countryCitizenHappiness), position.getIntX(), position.getIntY() + 272);
 
         g2d.drawImage(countryImage, getPosition().getIntX(), getPosition().getIntY(),
                 size, size, new ImageObserver() {
