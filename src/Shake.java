@@ -12,11 +12,9 @@ public class Shake extends State {
     @Override
     public Position getNextMove(Position _currentPosition) {
         setPrevVals();
-        Random ran = new Random();
-        int x = ran.nextInt(2) + prevX;
-        int y = ran.nextInt(2) + prevY;
-        _prevPosition= new Position(_currentPosition.getIntX()+x,
-                _currentPosition.getIntY()+y);
+
+        _prevPosition= new Position(_currentPosition.getIntX()+prevX,
+                _currentPosition.getIntY()+prevY);
 
         return checkBoundaries() ? _prevPosition :_currentPosition;
     }//

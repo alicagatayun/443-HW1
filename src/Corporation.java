@@ -86,6 +86,10 @@ public class Corporation extends Entity {
                 _restState.getNextMove(position);
                 break;
             case Shake:
+                Position pos;
+                pos = _shakeState.getNextMove(position);
+                position.setX(pos.getIntX());
+                position.setY(pos.getIntY());
                 break;
             case Chase:
                 _chaseClosestState.getNextMove(position);
@@ -122,29 +126,7 @@ public class Corporation extends Entity {
     @Override
     public void step() {
         //Burada state'e geçebilir miyim diye soracağız. eğer isAllowedsa random bir state'e geçeceğiz.
-        Position pos;
-        switch (currentState){
-            case Rest:
-                _restState.getNextMove(position);
-                if(_restState.IsAllowed())
-                    pickAnotherState();
-                break;
-            case Shake:
-                pos = _shakeState.getNextMove(position);
-                position.setX(pos.getIntX());
-                position.setY(pos.getIntY());
-                if(_shakeState.IsAllowed())
-                pickAnotherState();
-                break;
-            case Chase:
-                _chaseClosestState.getNextMove(position);
-                currentState=States.Rest;
-                break;
-            case GotoXY:
-                _gotoXYState.getNextMove(position);
-                currentState=States.Rest;
-                break;
-        }
+        pickAnotherState();
 
     }
     // TODO
