@@ -19,13 +19,7 @@ public class Corporation extends Entity {
         WHITE,
         NONE
     }
-    enum States{
-        Rest,
-        GotoXY,
-        Shake,
-        Chase
-    }
-    private States currentState=States.Rest;
+/*
     Colors  getCurrentBadgesColor(){
         if(corporationCash > 6000 ){
             return Colors.RED;
@@ -38,16 +32,14 @@ public class Corporation extends Entity {
         }
         return Colors.NONE;
     }
-    private Rest _restState = new Rest();
-    private ChaseClosest _chaseClosestState = new ChaseClosest();
-    private GotoXY _gotoXYState=new GotoXY();
-    private Shake _shakeState=new Shake();
 
-    public Corporation(double x, double y, Image corporationImage, String corporationName, int corporationCash) {
+*/
+    public Corporation(double x, double y, Image corporationImage, String corporationName, int corporationCash,State _initialState) {
         super(x, y);
         this.corporationImage = corporationImage;
         this.corporationName = corporationName;
         this.corporationCash = corporationCash;
+        this.state = _initialState;
 
     }
 
@@ -82,40 +74,23 @@ public class Corporation extends Entity {
     @Override
     public void draw(Graphics2D g2d) {
         Position pos;
-        switch (currentState){
-            case Rest:
-                _restState.getNextMove(position);
-                break;
-            case Shake:
-                pos = _shakeState.getNextMove(position);
-                position.setX(pos.getIntX());
-                position.setY(pos.getIntY());
-                break;
-            case Chase:
-                _chaseClosestState.getNextMove(position);
-                break;
-            case GotoXY:
-                pos = _gotoXYState.getNextMove(position);
-                position.setX(pos.getIntX());
-                position.setY(pos.getIntY());
-                if(_gotoXYState.IsReachedDestination())
-                    pickAnotherState();
+        pos = state.getNextMove(position);
+        position.setX(pos.getIntX());
+        position.setY(pos.getIntY());
 
-                break;
-        }
         g2d.setColor(Color.BLACK);
         g2d.setFont(boldFont);
-        g2d.drawString(corporationName, getPosition().getIntX() +25, getPosition().getIntY() -7);
+        g2d.drawString(corporationName, position.getIntX() +25, position.getIntY() -7);
 
         g2d.setColor(Color.BLUE);
         g2d.setFont(boldFont);
-        g2d.drawString(currentState.name(), getPosition().getIntX() +25, getPosition().getIntY() +120);
+        g2d.drawString(state.getCurrentStateName(), position.getIntX() +25, position.getIntY() +120);
 
         g2d.setColor(new Color(180,0,0));
         g2d.setFont(boldFont);
-        g2d.drawString(getCorporationCashString(), getPosition().getIntX() +40, getPosition().getIntY() +145);
+        g2d.drawString(getCorporationCashString(), position.getIntX() +40, position.getIntY() +145);
 
-        g2d.drawImage(corporationImage, getPosition().getIntX(), getPosition().getIntY(),
+        g2d.drawImage(corporationImage, position.getIntX(), position.getIntY(),
                 imageSize, imageSize, new ImageObserver() {
                     @Override
                     public boolean imageUpdate(Image img, int infoflags, int x, int y,int width, int height) {
@@ -123,20 +98,10 @@ public class Corporation extends Entity {
                     }
                 });
     }
-    private void pickAnotherState(){
-        Random rnd = new Random();
-        currentState = States.values()[(int)(Math.random()*States.values().length)];
-        System.out.println(currentState);
-        if(currentState==States.GotoXY){
-            _gotoXYState.setRandomSpeed();
-            _gotoXYState.setPrevVals(position);
-        }
-    }
+
     @Override
     public void step() {
-        //Burada state'e geçebilir miyim diye soracağız. eğer isAllowedsa random bir state'e geçeceğiz.
-        pickAnotherState();
-
+        state = Common.ChangeState();
 
     }
     // TODO

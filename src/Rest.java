@@ -10,4 +10,9 @@ public class Rest extends State {
         i++;
         return false;
     }
+
+    @Override
+    public String getCurrentStateName() {
+        return "Rest";
+    }
 }

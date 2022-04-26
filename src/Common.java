@@ -80,6 +80,16 @@ public class Common {
         return corporation;
     }
 
+
+    public static List<State> _states = setStates();
+    public static List<State> setStates(){
+        List<State> _states = new ArrayList<>();
+        _states.add(new Shake());
+        _states.add(new Rest());
+        _states.add(new ChaseClosest());
+        _states.add(new GotoXY());
+        return _states;
+    }
     private static final List<Corporation> corporation = setCorporation();
 
     public static Corporation getCorporationInformation(int index) {
@@ -161,6 +171,7 @@ public class Common {
 
 
     }
+
     public static List<Corporation> setCorporation() {
         int i = 0;
         List<Corporation> _corporations = new ArrayList<>();
@@ -173,26 +184,26 @@ public class Common {
         try {
             Image img = ImageIO.read(new File(file.toURI()));
             Corporation tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
-                    , "LMT", 0);
+                    , "LMT", 0, ChangeState());
             i += 300;
             _corporations.add(tempCorporation);
 
             img = ImageIO.read(new File(file2.toURI()));
             tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
-                    , "RTX", 0);
+                    , "RTX", 0, ChangeState());
             i += 300;
             _corporations.add(tempCorporation);
 
             img = ImageIO.read(new File(file3.toURI()));
             tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
-                    , "BA", 0);
+                    , "BA", 0, ChangeState());
             i += 300;
             _corporations.add(tempCorporation);
 
 
             img = ImageIO.read(new File(file4.toURI()));
             tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
-                    , "NOC", 0);
+                    , "NOC", 0, ChangeState());
             i += 300;
 
 
@@ -200,7 +211,7 @@ public class Common {
 
             img = ImageIO.read(new File(file5.toURI()));
             tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
-                    , "GD", 0);
+                    , "GD", 0,ChangeState());
             i += 300;
 
             _corporations.add(tempCorporation);
@@ -214,6 +225,20 @@ public class Common {
 
     }
 
+    public static State ChangeState(){
+        State newState =   _states.get((int) (Math.random() * _states.size()));
+        switch (newState.getCurrentStateName()){
+            case "Chase":
+                return new ChaseClosest();
+            case "Shake":
+                return new Shake();
+            case "Rest":
+                return new Rest();
+            default:
+                return new GotoXY();
+        }
+
+    }
     static {
         final List<Country> country = setCountry();
     }
@@ -223,8 +248,8 @@ public class Common {
         if (randomGenerator.nextInt(200) == 0) foodPrice.step();
         if (randomGenerator.nextInt(300) == 0) electronicsPrice.step();
         if (randomGenerator.nextInt(400) == 0) goldPrice.step();
-        for(int i = 0;i<corporation.size();i++){
-            if (randomGenerator.nextInt(i+600) == 0) corporation.get(i).step();
+        for (int i = 0; i < corporation.size(); i++) {
+            if (randomGenerator.nextInt(i + 600) == 0) corporation.get(i).step();
         }
 
 

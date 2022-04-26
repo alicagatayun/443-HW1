@@ -2,11 +2,16 @@ public class ChaseClosest extends State {
 
     @Override
     public Position getNextMove(Position _currentPosition) {
-        return new Position(3,4);
+        return _currentPosition;
     }
 
     @Override
     public Boolean IsAllowed() {
         return null;
+    }
+
+    @Override
+    public String getCurrentStateName() {
+        return "Chase";
     }
 }

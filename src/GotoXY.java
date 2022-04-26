@@ -5,6 +5,13 @@ public class GotoXY extends State {
     private Position _prevPosition;
     private Position _targetPosition;
     private int randomSpeed;
+
+
+
+    @Override
+    public String getCurrentStateName() {
+        return "GotoXY";
+    }
     void setPrevVals(Position _initialPosition){
 
         Random random = new Random();
@@ -32,6 +39,11 @@ public class GotoXY extends State {
     }
     @Override
     public Position getNextMove(Position _currentPosition) {
+        if(_targetPosition == null){
+            setPrevVals(_currentPosition);
+            setRandomSpeed();
+        }
+
 //TODO EĞER DESTINATION'A ÇOK YAKINSA EŞİTLEYİP STATE DEĞİŞTİRİLSİN.
         if(_targetPosition.getIntX() > _prevPosition.getIntX()){
             _prevPosition.setX(_prevPosition.getIntX()+randomSpeed);

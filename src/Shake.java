@@ -9,6 +9,11 @@ public class Shake extends State {
         if(prevX == -2)  prevX = 2; else prevX = -2;
 
     }
+
+    @Override
+    public String getCurrentStateName() {
+        return "Shake";
+    }
     @Override
     public Position getNextMove(Position _currentPosition) {
         setPrevVals();
