@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.image.ImageObserver;
+import java.util.List;
 
 public class Country extends Entity {
     public Country(double x, double y) {
@@ -15,6 +16,7 @@ public class Country extends Entity {
     private int countryGold;
     private double countryCitizenHappiness;
     private final static int size = 150;
+    private List<Order> order;
 
     public Image getCountryImage() {
         return countryImage;
