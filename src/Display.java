@@ -43,6 +43,11 @@ public class Display extends JPanel {
         {
             csd.get(i).draw((Graphics2D) g);
         }
+
+        for (Order o : Common.getOrders()) {
+            if(!o.completed)
+            o.draw((Graphics2D) g);
+        }
             /*
         while(true){
             File file = new File("./images/boeing.png"); //needs to be an "image" folder in the project folder

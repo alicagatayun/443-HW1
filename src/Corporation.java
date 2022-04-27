@@ -1,12 +1,13 @@
 import java.awt.*;
 import java.awt.image.ImageObserver;
-import java.util.Random;
+import java.util.List;
 
 public class Corporation extends Entity {
     public Corporation(double x, double y) {
         super(x, y);
     }
     private State state;
+    private List<Order> _liveOrders;
     private Image corporationImage;
     private String corporationName;
     private int corporationCash;
@@ -34,13 +35,13 @@ public class Corporation extends Entity {
     }
 
 */
-    public Corporation(double x, double y, Image corporationImage, String corporationName, int corporationCash,State _initialState) {
+    public Corporation(double x, double y, Image corporationImage, String corporationName, int corporationCash,State _initialState,List<Order> _orders) {
         super(x, y);
         this.corporationImage = corporationImage;
         this.corporationName = corporationName;
         this.corporationCash = corporationCash;
         this.state = _initialState;
-
+        this._liveOrders = _orders;
     }
 
     public void setCorporationImage(Image corporationImage) {

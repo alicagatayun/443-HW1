@@ -14,6 +14,12 @@ public class Country extends Entity {
     private int countryWorth;
     private int countryCash;
     private int countryGold;
+
+    public String getCountryFL() {
+        return countryFL;
+    }
+
+    private String countryFL;
     private double countryCitizenHappiness;
     private final static int size = 150;
     private List<Order> order;
@@ -43,9 +49,10 @@ public class Country extends Entity {
     }
 
     public Country(double x, double y, Image countryImage,
-                   String countryName, int countryWorth, int countryCash, int countryGold, double countryCitizenHappiness) {
+                   String countryName, int countryWorth, int countryCash, int countryGold, double countryCitizenHappiness,String countryFL) {
         super(x, y);
         this.countryImage = countryImage;
+        this.countryFL = countryFL;
         this.countryName = countryName;
         this.countryWorth = countryWorth;
         this.countryCash = countryCash;
@@ -85,9 +92,9 @@ public class Country extends Entity {
 
         g2d.setColor(Color.BLUE);
         g2d.setFont(lightFont);
-        g2d.drawString(String.format("%s: %d$", "Worth", countryWorth), position.getIntX(), position.getIntY() + 194);
+        g2d.drawString(String.format("%s: %d$", "Worth", dynamicWorth()), position.getIntX(), position.getIntY() + 194);
 
-        g2d.setColor(new Color(0,100,0));
+        g2d.setColor(new Color(0, 100, 0));
         g2d.setFont(lightFont);
         g2d.drawString(String.format("%s: %d$", "Cash", countryCash), position.getIntX(), position.getIntY() + 220);
 
@@ -95,7 +102,7 @@ public class Country extends Entity {
         g2d.setFont(lightFont);
         g2d.drawString(String.format("%s: %d$", "Gold", countryGold), position.getIntX(), position.getIntY() + 246);
 
-        g2d.setColor(new Color(180,0,0));
+        g2d.setColor(new Color(180, 0, 0));
         g2d.setFont(lightFont);
         g2d.drawString(String.format("%s: %.1f$", "Happiness", countryCitizenHappiness), position.getIntX(), position.getIntY() + 272);
 
@@ -109,10 +116,36 @@ public class Country extends Entity {
 
         //g2d.drawString(String.format("%s: %.2f$", countryName, currentPrice), position.getIntX(), position.getIntY()+10);
     }
-
+    public void buyGoldOrder(int _buyedGoldAmount){
+        this.countryGold += _buyedGoldAmount;
+        this.countryCash -= Common.getGoldPrice().getCurrentPrice()*_buyedGoldAmount;
+    }
+    public void sellGoldOrder(int _selledGoldAmount){
+        this.countryGold -= _selledGoldAmount;
+        this.countryCash += Common.getGoldPrice().getCurrentPrice()*_selledGoldAmount;
+    }
+    public int dynamicWorth(){
+        return (int) (this.countryCash+this.countryGold*Common.getGoldPrice().getCurrentPrice());
+    }
     @Override
     public void step() {
-
+        if (countryCitizenHappiness < 50) {
+            //GenerateFoodOrElectronic()
+        }
+        int rnd = Common.getRandomGenerator().nextInt() & 0x1;
+        if(rnd == 0){
+            Common.getOrders().add(new BuyGoldOrder(position.getIntX()+24
+            +Common.getRandomGenerator().nextInt(50),
+                    position.getIntY()+24
+                            +Common.getRandomGenerator().nextInt(50),
+                    this,Math.abs(Common.getRandomGenerator().nextInt() % 5) + 1,
+                    Math.abs(Common.getRandomGenerator().nextInt() % 5),
+                    position
+                    ).createNewOrder(this));
+        }
+        else{
+           // Common.getOrders().add(Common.getGoldOrders().get(rnd));
+        }
     }
     // TODO
     // Country image is 150 x 150

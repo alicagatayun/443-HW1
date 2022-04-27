@@ -2,6 +2,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.ImageObserver;
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -80,6 +81,16 @@ public class Common {
         return corporation;
     }
 
+    private static  ArrayList<Order> orders;
+    private static  ArrayList<GoldOrder> goldOrders;
+
+    public static ArrayList<Order> getOrders() {
+        return orders;
+    }
+    public static ArrayList<GoldOrder> getGoldOrders() {
+        return goldOrders;
+    }
+
 
     public static List<State> _states = setStates();
     public static List<State> setStates(){
@@ -128,21 +139,21 @@ public class Common {
             Image img = ImageIO.read(new File(file.toURI()));
             parts = file.getName().split("\\.");
             Country tempCountry = new Country(getFirstCountryPointX() + i, getFirstCountryPointY(), img
-                    , "Chile", 8750, 5000, 50, 50.0);
+                    , "Chile", 8750, 5000, 50, 50.0,"CL");
             i += 260;
             _countries.add(tempCountry);
 
             img = ImageIO.read(new File(file2.toURI()));
             parts = file2.getName().split("\\.");
             tempCountry = new Country(getFirstCountryPointX() + i, getFirstCountryPointY(), img
-                    , "Malaysia", 8750, 5000, 50, 50.0);
+                    , "Malaysia", 8750, 5000, 50, 50.0,"ML");
             i += 260;
             _countries.add(tempCountry);
 
             img = ImageIO.read(new File(file3.toURI()));
             parts = file3.getName().split("\\.");
             tempCountry = new Country(getFirstCountryPointX() + i, getFirstCountryPointY(), img
-                    , "Mexico", 8750, 5000, 50, 50.0);
+                    , "Mexico", 8750, 5000, 50, 50.0,"MX");
             i += 260;
             _countries.add(tempCountry);
 
@@ -150,7 +161,7 @@ public class Common {
             img = ImageIO.read(new File(file4.toURI()));
             parts = file4.getName().split("\\.");
             tempCountry = new Country(getFirstCountryPointX() + i, getFirstCountryPointY(), img
-                    , "Nigeria", 8750, 5000, 50, 50.0);
+                    , "Nigeria", 8750, 5000, 50, 50.0,"NG");
             i += 260;
 
             _countries.add(tempCountry);
@@ -158,7 +169,7 @@ public class Common {
             img = ImageIO.read(new File(file5.toURI()));
             parts = file5.getName().split("\\.");
             tempCountry = new Country(getFirstCountryPointX() + i, getFirstCountryPointY(), img
-                    , "Poland", 8750, 5000, 50, 50.0);
+                    , "Poland", 8750, 5000, 50, 50.0,"PO");
             i += 260;
 
             _countries.add(tempCountry);
@@ -183,35 +194,40 @@ public class Common {
         String[] parts;
         try {
             Image img = ImageIO.read(new File(file.toURI()));
+            List<Order> tmp = new ArrayList<>();
             Corporation tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
-                    , "LMT", 0, ChangeState());
+                    , "LMT", 0, ChangeState(), tmp);
             i += 300;
             _corporations.add(tempCorporation);
 
             img = ImageIO.read(new File(file2.toURI()));
+            tmp = new ArrayList<>();
             tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
-                    , "RTX", 0, ChangeState());
+                    , "RTX", 0, ChangeState(), tmp) ;
             i += 300;
             _corporations.add(tempCorporation);
 
             img = ImageIO.read(new File(file3.toURI()));
+            tmp = new ArrayList<>();
             tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
-                    , "BA", 0, ChangeState());
+                    , "BA", 0, ChangeState(), tmp) ;
             i += 300;
             _corporations.add(tempCorporation);
 
 
             img = ImageIO.read(new File(file4.toURI()));
+            tmp = new ArrayList<>();
             tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
-                    , "NOC", 0, ChangeState());
+                    , "NOC", 0, ChangeState(), tmp) ;
             i += 300;
 
 
             _corporations.add(tempCorporation);
 
             img = ImageIO.read(new File(file5.toURI()));
+            tmp = new ArrayList<>();
             tempCorporation = new Corporation(getInitialCorporationPointX() + i, getInitialCorporationPointY(), img
-                    , "GD", 0,ChangeState());
+                    , "GD", 0,ChangeState(), tmp) ;
             i += 300;
 
             _corporations.add(tempCorporation);
@@ -241,6 +257,9 @@ public class Common {
     }
     static {
         final List<Country> country = setCountry();
+        goldOrders= new ArrayList<>();
+
+        orders = new ArrayList<>();
     }
 
 
@@ -248,11 +267,31 @@ public class Common {
         if (randomGenerator.nextInt(200) == 0) foodPrice.step();
         if (randomGenerator.nextInt(300) == 0) electronicsPrice.step();
         if (randomGenerator.nextInt(400) == 0) goldPrice.step();
+        for (int i = 0; i < orders.size(); i++) {
+                if(!orders.get(i).completed)
+                orders.get(i).step();
+
+
+        }
         for (int i = 0; i < corporation.size(); i++) {
             if (randomGenerator.nextInt(i + 600) == 0) corporation.get(i).step();
+        }
+        for (int i = 0; i < country.size(); i++) {
+            if (randomGenerator.nextInt(i + 600) == 0) {
+                country.get(i).step();
+
+            }
         }
 
 
         // TODO: call other entities' step()
+    }
+
+    public static void ClearOrders() {
+        for (Order o : Common.getOrders()) {
+            if(o.completed == true){
+                Common.getOrders().remove(o);
+            }
+        }
     }
 }
