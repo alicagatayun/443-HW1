@@ -1,14 +1,14 @@
 import java.awt.*;
 
 public class LivePrice extends Entity {
-    private String name;
+    private final String name;
     private double currentPrice;
 
-    private int maxChange;
-    private int lowerLimit;
-    private int upperLimit;
+    private final int maxChange;
+    private final int lowerLimit;
+    private final int upperLimit;
 
-    private Font font = new Font("Verdana", Font.PLAIN, 40);
+    private final Font font = new Font("Verdana", Font.PLAIN, 40);
 
     public LivePrice(double x, double y, String name, double currentPrice, int maxChange, int lowerLimit, int upperLimit) {
         super(x, y);
@@ -19,7 +19,9 @@ public class LivePrice extends Entity {
         this.upperLimit = upperLimit;
     }
 
-    public double getCurrentPrice() { return currentPrice; }
+    public double getCurrentPrice() {
+        return currentPrice;
+    }
 
     @Override
     public void draw(Graphics2D g2d) {
@@ -32,7 +34,7 @@ public class LivePrice extends Entity {
     public void step() {
         double change = Common.getRandomGenerator().nextDouble() * maxChange;
         currentPrice = Common.getRandomGenerator().nextBoolean() ? currentPrice + change : currentPrice - change;
-        if(currentPrice < lowerLimit) currentPrice = lowerLimit;
-        else if(currentPrice > upperLimit) currentPrice = upperLimit;
+        if (currentPrice < lowerLimit) currentPrice = lowerLimit;
+        else if (currentPrice > upperLimit) currentPrice = upperLimit;
     }
 }

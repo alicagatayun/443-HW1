@@ -1,81 +1,57 @@
-import java.util.Random;
-
 public class ChaseClosest extends State {
 
-    private Order order;
-    private double speed = -1.0;
-
-    private Position findPositionOfClosestOrder(Corporation corporation) {
-        double closestDist = 10000000.0;
-        Position bestPosition = null;
-        for(int i = 0; i < Common.getOrders().size(); ++i) {
-            if(!Common.getOrders().get(i).isCompleted() && Common.getOrders().get(i).isGoldBuyOrSellOrder())
-            {
-                double dist = Common.getOrders().get(i).getPosition().distanceTo(corporation.getPosition().getX(), corporation.getPosition().getY());
-                if(dist < closestDist) {
-                    bestPosition = Common.getOrders().get(i).getPosition();
-                    closestDist = dist;
-                    order = Common.getOrders().get(i);
-                }
-            }
-
-        }
-        return bestPosition;
-    }
-    private int  randomNum(int left, int right){
-        Random random = new Random();
-        return random.nextInt(right-left) + left;
-    }
+    /***
+     * This method firstly calculate the distance between itself and CLOSEST order then starts moving to it. In the next step if it detects closer order
+     * it changes its direction to the closest one.
+     * How? It s actually a basic search implementation. Firstly create an MAX_DISTANCE, if new distance is smaller than the MAX_DISTANCE then replace them until it reaches the end of the list of orders.
+     * Then, Like in the other states' It checks whether any order is very close to me so that it can crab.
+     * After that, it sets its next move and return.
+     * @param corporation Corporation
+     */
     @Override
     public void getNextMove(Corporation corporation) {
-        Position currentPositionToGo = findPositionOfClosestOrder(corporation);
-        if(speed == -1) {
-            speed = randomNum(1, 2);
-        }
 
-        for(Order o : Common.getOrders()){
-            if(!o.isCompleted()){
-                //Eğer bitmemiş ve satılmamışsa sat hemen satt koy  koyy sat gitsin
-                double dist = o.getPosition().distanceTo(corporation.getPosition().getX(),corporation.getPosition().getY());
-                if(dist <= 20){
-                    if(o.isGoldBuyOrSellOrder())//GOLD BUY{
-                    {
-                        corporation.setCorporationCash((Common.getGoldPrice().getCurrentPrice()*o.amount));
-                        if(o.isSell()){//SATIŞ
-                            o.getCountry().setCountryCash(o.amount*Common.getGoldPrice().getCurrentPrice()*-1);
-
-                        }
-                        else{//ALIŞ
-                            o.getCountry().setCountryCash(o.amount*-1);
-
-                        }
-                        o.getCountry().setCountryCitizenHappiness(o.amount*0.1*-1);
-                        o.completed=true;
-                    }
-                    else
-                    {
-
-                    }
-
-
+        double distance = 999999.9;
+        Position currentPositionToGo = null;
+        for (Order o : Common.getOrders()) {
+            if (!o.isCompleted() && o.isGoldBuyOrSellOrder()) {
+                double tmp = o.getPosition().distanceTo(corporation.getPosition().getX(),
+                        corporation.getPosition().getY());
+                if (tmp < distance) {
+                    currentPositionToGo = o.getPosition();
+                    distance = tmp;
                 }
+            }
+        }
+        for (Order o : Common.getOrders()) {
+            if (!o.isCompleted()) {
+                double dist = o.getPosition().distanceTo(corporation.getPosition().getX() + 5, corporation.getPosition().getY() + 15);
+                if (dist <= 30) {
+                    if (o.isGoldBuyOrSellOrder()) {
+                        corporation.setCorporationCash((Common.getGoldPrice().getCurrentPrice() * o.amount));
+                        if (o.isSell()) {
+                            o.getCountry().setCountryCash(o.amount * Common.getGoldPrice().getCurrentPrice() * -1);
 
+                        } else {
+                            o.getCountry().setCountryCash(o.amount * -1);
+
+                        }
+                        o.getCountry().setCountryCitizenHappiness(o.amount * 0.1 * -1);
+                        o.completed = true;
+                    }
+                }
             }
         }
         Position position = corporation.getPosition();
-        if(currentPositionToGo==null){
+        if (currentPositionToGo == null) {
             return;
         }
-        double newX = position.getX() + (currentPositionToGo.getX()-position.getX()) / 100.0 * speed;
-        double newY = position.getY() + (currentPositionToGo.getY()-position.getY()) / 100.0 * speed;
+        int speed = Math.abs(Common.getRandomGenerator().nextInt(2) + 1);
+        double newX = position.getX() + (currentPositionToGo.getX() - position.getX()) / 250.0 * speed;
+        double newY = position.getY() + (currentPositionToGo.getY() - position.getY()) / 250.0 * speed;
         position.setX(newX);
         position.setY(newY);
         corporation.position = position;
-    }
-
-    @Override
-    public Boolean IsAllowed() {
-        return null;
     }
 
     @Override

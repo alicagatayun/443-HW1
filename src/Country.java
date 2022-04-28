@@ -1,58 +1,25 @@
 import java.awt.*;
-import java.awt.image.ImageObserver;
-import java.util.List;
 
 public class Country extends Entity {
-    public Country(double x, double y) {
-        super(x, y);
-    }
 
+    private final static int size = 150;
+    // Private Fields :
     private final Font lightFont = new Font("Verdana", Font.PLAIN, 20);
     private final Font boldFont = new Font("Verdana", Font.BOLD, 20);
+    private final String countrySF;
     private Image countryImage;
     private String countryName;
     private int countryWorth;
     private double countryCash;
     private int countryGold;
-
-    public String getCountryFL() {
-        return countryFL;
-    }
-
-    private String countryFL;
     private double countryCitizenHappiness;
-    private final static int size = 150;
-    private List<Order> order;
 
-    public Image getCountryImage() {
-        return countryImage;
-    }
-
-    public String getCountryName() {
-        return countryName;
-    }
-
-    public int getCountryWorth() {
-        return countryWorth;
-    }
-
-    public int getCountryCash() {
-        return (int)countryCash;
-    }
-
-    public void setCountryImage(Image countryImage) {
-        this.countryImage = countryImage;
-    }
-
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
-
+    // Constructor
     public Country(double x, double y, Image countryImage,
-                   String countryName, int countryWorth, int countryCash, int countryGold, double countryCitizenHappiness,String countryFL) {
+                   String countryName, int countryWorth, int countryCash, int countryGold, double countryCitizenHappiness, String countrySF) {
         super(x, y);
         this.countryImage = countryImage;
-        this.countryFL = countryFL;
+        this.countrySF = countrySF;
         this.countryName = countryName;
         this.countryWorth = countryWorth;
         this.countryCash = countryCash;
@@ -60,30 +27,70 @@ public class Country extends Entity {
         this.countryCitizenHappiness = countryCitizenHappiness;
     }
 
+
+    //Getter
+    public String getCountrySf() {
+        return countrySF;
+    }
+
+    public Image getCountryImage() {
+        return countryImage;
+    }
+
+    //Setter
+    public void setCountryImage(Image countryImage) {
+        this.countryImage = countryImage;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+    }
+
+    public int getCountryWorth() {
+        return countryWorth;
+    }
+
     public void setCountryWorth(int countryWorth) {
         this.countryWorth = countryWorth;
+    }
+
+    public int getCountryCash() {
+        return (int) countryCash;
     }
 
     public void setCountryCash(double countryCash) {
         this.countryCash += countryCash;
     }
 
-    public void setCountryGold(int countryGold) {
-        this.countryGold = countryGold;
-    }
-
-    public void setCountryCitizenHappiness(double countryCitizenHappiness) {
-        this.countryCitizenHappiness += countryCitizenHappiness;
-    }
-
     public int getCountryGold() {
         return countryGold;
+    }
+
+    public void setCountryGold(int countryGold) {
+        this.countryGold = countryGold;
     }
 
     public double getCountryCitizenHappiness() {
         return countryCitizenHappiness;
     }
 
+    public void setCountryCitizenHappiness(double countryCitizenHappiness) {
+        this.countryCitizenHappiness += countryCitizenHappiness;
+    }
+
+
+    //Overridden Methods
+
+    /***
+     * In this method, we used the Graphics2D library to plot all Countries defined as static.
+     * First we write the Color, then the font and finally the Strings in g2d.
+     * We used the drawImage method while adding an image.     *
+     * @param g2d Graphics2D
+     */
     @Override
     public void draw(Graphics2D g2d) {
         g2d.setColor(Color.BLACK);
@@ -107,49 +114,43 @@ public class Country extends Entity {
         g2d.drawString(String.format("%s: %.1f$", "Happiness", getCountryCitizenHappiness()), position.getIntX(), position.getIntY() + 272);
 
         g2d.drawImage(countryImage, getPosition().getIntX(), getPosition().getIntY(),
-                size, size, new ImageObserver() {
-                    @Override
-                    public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
-                        return false;
-                    }
-                });
+                size, size, (img, infoflags, x, y, width, height) -> false);
 
-        //g2d.drawString(String.format("%s: %.2f$", countryName, currentPrice), position.getIntX(), position.getIntY()+10);
     }
-    public void buyGoldOrder(int _buyedGoldAmount){
-        this.countryGold += _buyedGoldAmount;
-        this.countryCash -= Common.getGoldPrice().getCurrentPrice()*_buyedGoldAmount;
-    }
-    public void sellGoldOrder(int _selledGoldAmount){
-        this.countryGold -= _selledGoldAmount;
-        this.countryCash += Common.getGoldPrice().getCurrentPrice()*_selledGoldAmount;
-    }
-    public int dynamicWorth(){
-        return (int) (this.countryCash+this.countryGold*Common.getGoldPrice().getCurrentPrice());
-    }
+
+
+    /**
+     * This method is created to make the Country Object generate Gold Orders at Random times. If the happiness level of the citizens of the country
+     * drops below 50 percent, the Country Object starts to produce Electronic and Food Orders as well.
+     * Gold Production :
+     * - First, generate a random number between 0 and 1. If random number is equal to 0, then Country Creates BuyGoldOrder, else SellGoldOrder
+     * - We are sending some parameters to GoldOrder subclasses, such as position, and  a random amount number between 1-5
+     *
+     * @author Ali Çağatay ÜN
+     */
+
     @Override
     public void step() {
         if (countryCitizenHappiness < 50) {
             int rnd = Common.getRandomGenerator().nextInt() & 0x1;
-            if(rnd == 0){
-                ElectronicsOrder by = new ElectronicsOrder(position.getIntX()+24
-                        +Common.getRandomGenerator().nextInt(50),
-                        position.getIntY()+24
-                                +Common.getRandomGenerator().nextInt(50),
-                        this,Math.abs(Common.getRandomGenerator().nextInt() % 5) + 1,
+            if (rnd == 0) {
+                ElectronicsOrder by = new ElectronicsOrder(position.getIntX() + 24
+                        + Common.getRandomGenerator().nextInt(50),
+                        position.getIntY() + 24
+                                + Common.getRandomGenerator().nextInt(50),
+                        this, Math.abs(Common.getRandomGenerator().nextInt() % 5) + 1,
                         Math.abs(Common.getRandomGenerator().nextInt() % 5),
                         position
                 );
                 ElectronicsOrder sd = (ElectronicsOrder) by.createNewOrder(this);
                 sd.setGoldBuyOrSellOrder(false);
                 Common.getOrders().add(sd);
-            }
-            else{
-                FoodOrder by = new FoodOrder(position.getIntX()+24
-                        +Common.getRandomGenerator().nextInt(50),
-                        position.getIntY()+24
-                                +Common.getRandomGenerator().nextInt(50),
-                        this,Math.abs(Common.getRandomGenerator().nextInt() % 5) + 1,
+            } else {
+                FoodOrder by = new FoodOrder(position.getIntX() + 24
+                        + Common.getRandomGenerator().nextInt(50),
+                        position.getIntY() + 24
+                                + Common.getRandomGenerator().nextInt(50),
+                        this, Math.abs(Common.getRandomGenerator().nextInt() % 5) + 1,
                         Math.abs(Common.getRandomGenerator().nextInt() % 5),
                         position
                 );
@@ -159,48 +160,63 @@ public class Country extends Entity {
             }
         }
         int rnd = Common.getRandomGenerator().nextInt() & 0x1;
-        if(rnd == 0){
-            BuyGoldOrder by = new BuyGoldOrder(position.getIntX()+24
-                    +Common.getRandomGenerator().nextInt(50),
-                    position.getIntY()+24
-                            +Common.getRandomGenerator().nextInt(50),
-                    this,Math.abs(Common.getRandomGenerator().nextInt() % 5) + 1,
+        if (rnd == 0) {
+            BuyGoldOrder by = new BuyGoldOrder(position.getIntX() + 24
+                    + Common.getRandomGenerator().nextInt(50),
+                    position.getIntY() + 24
+                            + Common.getRandomGenerator().nextInt(50),
+                    this, Math.abs(Common.getRandomGenerator().nextInt() % 5) + 1,
                     Math.abs(Common.getRandomGenerator().nextInt() % 5),
                     position
             );
-            BuyGoldOrder sd = (BuyGoldOrder) by.createNewOrder(this);
+            BuyGoldOrder sd = (BuyGoldOrder) by.createOrder(this);
             sd.setGoldBuyOrSellOrder(true);
             Common.getOrders().add(sd);
-        }
-        else{
-            SellGoldOrder by = new SellGoldOrder(position.getIntX()+24
-                    +Common.getRandomGenerator().nextInt(50),
-                    position.getIntY()+24
-                            +Common.getRandomGenerator().nextInt(50),
-                    this,Math.abs(Common.getRandomGenerator().nextInt() % 5) + 1,
+        } else {
+            SellGoldOrder by = new SellGoldOrder(position.getIntX() + 24
+                    + Common.getRandomGenerator().nextInt(50),
+                    position.getIntY() + 24
+                            + Common.getRandomGenerator().nextInt(50),
+                    this, Math.abs(Common.getRandomGenerator().nextInt() % 5) + 1,
                     Math.abs(Common.getRandomGenerator().nextInt() % 5),
                     position
             );
-            SellGoldOrder sd = (SellGoldOrder) by.createNewOrder(this);
-            sd.setGoldBuyOrSellOrder(true);
-            sd.setSell(true);
-            Common.getOrders().add(sd);
+
+            if (getCountryGold() - by.amount > 0) {
+                SellGoldOrder sd = (SellGoldOrder) by.createOrder(this);
+                sd.setGoldBuyOrSellOrder(true);
+                sd.setSell(true);
+                Common.getOrders().add(sd);
+            }
+
         }
+
+    }
+
+    // Other Methods
+
+    public void buyGoldOrder(int _buyedGoldAmount) {
+        this.countryGold += _buyedGoldAmount;
+        this.countryCash -= Common.getGoldPrice().getCurrentPrice() * _buyedGoldAmount;
+    }
+
+    public void sellGoldOrder(int _selledGoldAmount) {
+        this.countryGold -= _selledGoldAmount;
+        this.countryCash += Common.getGoldPrice().getCurrentPrice() * _selledGoldAmount;
+    }
+
+    public int dynamicWorth() {
+        return (int) (this.countryCash + this.countryGold * Common.getGoldPrice().getCurrentPrice());
     }
 
     public void buyElectronicDevice(int amount) {
-        this.countryCash -= Common.getElectronicsPrice().getCurrentPrice()*amount;
-        this.countryCitizenHappiness += 0.4*amount;
+        this.countryCash -= Common.getElectronicsPrice().getCurrentPrice() * amount;
+        this.countryCitizenHappiness += 0.4 * amount;
     }
+
     public void buyFood(int amount) {
-        this.countryCash -= Common.getFoodPrice().getCurrentPrice()*amount;
-        this.countryCitizenHappiness += 0.2*amount;
+        this.countryCash -= Common.getFoodPrice().getCurrentPrice() * amount;
+        this.countryCitizenHappiness += 0.2 * amount;
     }
-    // TODO
-    // Country image is 150 x 150
-    // Name RGB --> Black
-    // Worth RGB --> Blue
-    // Cash RGB --> (0, 100, 0)
-    // Gold RGB --> Yellow
-    // Happiness RGB --> (180, 0, 0)
+
 }

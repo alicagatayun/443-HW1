@@ -1,10 +1,5 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 public class Display extends JPanel {
@@ -33,45 +28,19 @@ public class Display extends JPanel {
                 Common.getWindowWidth(), Common.getHorizontalLineY());
 
         List<Country> sd = Common.getAllCountry();
-        for(int i=0;i<sd.size();i++)
-        {
-            sd.get(i).draw((Graphics2D) g);
+        for (Country country : sd) {
+            country.draw((Graphics2D) g);
         }
 
         List<Corporation> csd = Common.getAllCorporation();
-        for(int i=0;i<csd.size();i++)
-        {
-            csd.get(i).draw((Graphics2D) g);
+        for (Corporation corporation : csd) {
+            corporation.draw((Graphics2D) g);
         }
 
         for (Order o : Common.getOrders()) {
-            if(!o.completed)
-            o.draw((Graphics2D) g);
+            if (!o.completed)
+                o.draw((Graphics2D) g);
         }
-            /*
-        while(true){
-            File file = new File("./images/boeing.png"); //needs to be an "image" folder in the project folder
-            try {
-                Image img = ImageIO.read(new File(file.toURI()));
-                g.drawImage(img, 4, 5, 150, 150, new ImageObserver() {
-                    @Override
-                    public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
-                        return false;
-                    }
-                });
-                break;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
-
-
-        }
-        */
-
-
-        //TODO: For Loop to draw countries..
-
-        // TODO: draw other entities
     }
 }

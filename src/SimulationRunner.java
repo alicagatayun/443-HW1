@@ -1,8 +1,8 @@
 import javax.swing.*;
 
 public class SimulationRunner {
-    private JFrame window = new JFrame();
-    private Display display = new Display();
+    private final JFrame window = new JFrame();
+    private final Display display = new Display();
 
     private static void createAndShowGUI() {
         SimulationRunner runner = new SimulationRunner();
