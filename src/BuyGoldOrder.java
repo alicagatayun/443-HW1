@@ -30,7 +30,23 @@ public class BuyGoldOrder extends GoldOrder {
 
     @Override
     Order createNewOrder(Country country) {
-        double[] orderData = getOrderData(country);
+        double[] orderData = new double[6];
+        int amount = Math.abs(Common.getRandomGenerator().nextInt() % 5) + 1;
+        int speed = Math.abs(Common.getRandomGenerator().nextInt() % 5);
+        if (speed < 1) speed = 1;
+        Position position = new Position(country.getPosition().getX() + 25 + Common.getRandomGenerator().nextInt(50), country.getPosition().getY() - 15);
+        int targetX = Common.getRandomGenerator().nextInt() % Common.getWindowWidth();
+        if (targetX < 0) {
+            targetX = -targetX;
+        }
+        Position target = new Position(targetX, Common.getHorizontalLineY());
+        orderData[0] = amount;
+        orderData[1] = speed;
+        orderData[2] = position.getX();
+        orderData[3] = position.getY();
+        orderData[4] = target.getX();
+        orderData[5] = target.getY();
+
         return new BuyGoldOrder(orderData[2], orderData[3], country, (int) orderData[0], (int) orderData[1], new Position(orderData[4], orderData[5]));
 
     }

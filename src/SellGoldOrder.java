@@ -12,7 +12,8 @@ public class SellGoldOrder extends GoldOrder {
 
     @Override
     Order createNewOrder(Country country) {
-        return null;
+        double[] orderData = getOrderData(country);
+        return new SellGoldOrder(orderData[2], orderData[3], country, (int) orderData[0], (int) orderData[1], new Position(orderData[4], orderData[5]));
     }
 
     @Override
@@ -29,6 +30,8 @@ public class SellGoldOrder extends GoldOrder {
         } else {
             this.position.setX(this.position.getX() + distance[0]);
             this.position.setY(this.position.getY() + distance[1]);
+
+
         }
     }
     // TODO

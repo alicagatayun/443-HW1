@@ -261,7 +261,17 @@ public class Common {
 
         orders = new ArrayList<>();
     }
-
+    private static void deleteCompletedOrSelled(){
+        List<Order> deleteList = new ArrayList<Order>();
+        for(Order o : orders){
+            if(o.isCompleted()){
+                deleteList.add(o);
+            }
+        }
+        for(Order o:deleteList){
+            orders.remove(o);
+        }
+    }
 
     public static void stepAllEntities() {
         if (randomGenerator.nextInt(200) == 0) foodPrice.step();
@@ -270,28 +280,17 @@ public class Common {
         for (int i = 0; i < orders.size(); i++) {
                 if(!orders.get(i).completed)
                 orders.get(i).step();
-
-
         }
         for (int i = 0; i < corporation.size(); i++) {
-            if (randomGenerator.nextInt(i + 600) == 0) corporation.get(i).step();
+                corporation.get(i).step();
         }
+        deleteCompletedOrSelled();
         for (int i = 0; i < country.size(); i++) {
-            if (randomGenerator.nextInt(i + 600) == 0) {
+            if (randomGenerator.nextInt(i + 400) == 0) {
                 country.get(i).step();
-
-            }
-        }
-
-
-        // TODO: call other entities' step()
-    }
-
-    public static void ClearOrders() {
-        for (Order o : Common.getOrders()) {
-            if(o.completed == true){
-                Common.getOrders().remove(o);
             }
         }
     }
+
+
 }

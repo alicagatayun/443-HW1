@@ -12,7 +12,7 @@ public class Country extends Entity {
     private Image countryImage;
     private String countryName;
     private int countryWorth;
-    private int countryCash;
+    private double countryCash;
     private int countryGold;
 
     public String getCountryFL() {
@@ -37,7 +37,7 @@ public class Country extends Entity {
     }
 
     public int getCountryCash() {
-        return countryCash;
+        return (int)countryCash;
     }
 
     public void setCountryImage(Image countryImage) {
@@ -64,8 +64,8 @@ public class Country extends Entity {
         this.countryWorth = countryWorth;
     }
 
-    public void setCountryCash(int countryCash) {
-        this.countryCash = countryCash;
+    public void setCountryCash(double countryCash) {
+        this.countryCash += countryCash;
     }
 
     public void setCountryGold(int countryGold) {
@@ -73,7 +73,7 @@ public class Country extends Entity {
     }
 
     public void setCountryCitizenHappiness(double countryCitizenHappiness) {
-        this.countryCitizenHappiness = countryCitizenHappiness;
+        this.countryCitizenHappiness += countryCitizenHappiness;
     }
 
     public int getCountryGold() {
@@ -96,15 +96,15 @@ public class Country extends Entity {
 
         g2d.setColor(new Color(0, 100, 0));
         g2d.setFont(lightFont);
-        g2d.drawString(String.format("%s: %d$", "Cash", countryCash), position.getIntX(), position.getIntY() + 220);
+        g2d.drawString(String.format("%s: %d$", "Cash", getCountryCash()), position.getIntX(), position.getIntY() + 220);
 
         g2d.setColor(Color.YELLOW);
         g2d.setFont(lightFont);
-        g2d.drawString(String.format("%s: %d$", "Gold", countryGold), position.getIntX(), position.getIntY() + 246);
+        g2d.drawString(String.format("%s: %d$", "Gold", getCountryGold()), position.getIntX(), position.getIntY() + 246);
 
         g2d.setColor(new Color(180, 0, 0));
         g2d.setFont(lightFont);
-        g2d.drawString(String.format("%s: %.1f$", "Happiness", countryCitizenHappiness), position.getIntX(), position.getIntY() + 272);
+        g2d.drawString(String.format("%s: %.1f$", "Happiness", getCountryCitizenHappiness()), position.getIntX(), position.getIntY() + 272);
 
         g2d.drawImage(countryImage, getPosition().getIntX(), getPosition().getIntY(),
                 size, size, new ImageObserver() {
@@ -130,22 +130,71 @@ public class Country extends Entity {
     @Override
     public void step() {
         if (countryCitizenHappiness < 50) {
-            //GenerateFoodOrElectronic()
+            int rnd = Common.getRandomGenerator().nextInt() & 0x1;
+            if(rnd == 0){
+                ElectronicsOrder by = new ElectronicsOrder(position.getIntX()+24
+                        +Common.getRandomGenerator().nextInt(50),
+                        position.getIntY()+24
+                                +Common.getRandomGenerator().nextInt(50),
+                        this,Math.abs(Common.getRandomGenerator().nextInt() % 5) + 1,
+                        Math.abs(Common.getRandomGenerator().nextInt() % 5),
+                        position
+                );
+                ElectronicsOrder sd = (ElectronicsOrder) by.createNewOrder(this);
+                sd.setGoldBuyOrSellOrder(false);
+                Common.getOrders().add(sd);
+            }
+            else{
+                FoodOrder by = new FoodOrder(position.getIntX()+24
+                        +Common.getRandomGenerator().nextInt(50),
+                        position.getIntY()+24
+                                +Common.getRandomGenerator().nextInt(50),
+                        this,Math.abs(Common.getRandomGenerator().nextInt() % 5) + 1,
+                        Math.abs(Common.getRandomGenerator().nextInt() % 5),
+                        position
+                );
+                FoodOrder sd = (FoodOrder) by.createNewOrder(this);
+                sd.setGoldBuyOrSellOrder(false);
+                Common.getOrders().add(sd);
+            }
         }
         int rnd = Common.getRandomGenerator().nextInt() & 0x1;
         if(rnd == 0){
-            Common.getOrders().add(new BuyGoldOrder(position.getIntX()+24
-            +Common.getRandomGenerator().nextInt(50),
+            BuyGoldOrder by = new BuyGoldOrder(position.getIntX()+24
+                    +Common.getRandomGenerator().nextInt(50),
                     position.getIntY()+24
                             +Common.getRandomGenerator().nextInt(50),
                     this,Math.abs(Common.getRandomGenerator().nextInt() % 5) + 1,
                     Math.abs(Common.getRandomGenerator().nextInt() % 5),
                     position
-                    ).createNewOrder(this));
+            );
+            BuyGoldOrder sd = (BuyGoldOrder) by.createNewOrder(this);
+            sd.setGoldBuyOrSellOrder(true);
+            Common.getOrders().add(sd);
         }
         else{
-           // Common.getOrders().add(Common.getGoldOrders().get(rnd));
+            SellGoldOrder by = new SellGoldOrder(position.getIntX()+24
+                    +Common.getRandomGenerator().nextInt(50),
+                    position.getIntY()+24
+                            +Common.getRandomGenerator().nextInt(50),
+                    this,Math.abs(Common.getRandomGenerator().nextInt() % 5) + 1,
+                    Math.abs(Common.getRandomGenerator().nextInt() % 5),
+                    position
+            );
+            SellGoldOrder sd = (SellGoldOrder) by.createNewOrder(this);
+            sd.setGoldBuyOrSellOrder(true);
+            sd.setSell(true);
+            Common.getOrders().add(sd);
         }
+    }
+
+    public void buyElectronicDevice(int amount) {
+        this.countryCash -= Common.getElectronicsPrice().getCurrentPrice()*amount;
+        this.countryCitizenHappiness += 0.4*amount;
+    }
+    public void buyFood(int amount) {
+        this.countryCash -= Common.getFoodPrice().getCurrentPrice()*amount;
+        this.countryCitizenHappiness += 0.2*amount;
     }
     // TODO
     // Country image is 150 x 150

@@ -49,5 +49,5 @@ public abstract class State {
 
     public abstract String getCurrentStateName();
 
-    public abstract Position getNextMove(Position _currentPosition);
+    public abstract void getNextMove(Corporation corporation);
 }

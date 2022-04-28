@@ -10,7 +10,7 @@ public class Corporation extends Entity {
     private List<Order> _liveOrders;
     private Image corporationImage;
     private String corporationName;
-    private int corporationCash;
+    private double corporationCash;
     private final static int imageSize = 100;
     private final static int badgeSize=20;
 
@@ -35,12 +35,12 @@ public class Corporation extends Entity {
     }
 
 */
-    public Corporation(double x, double y, Image corporationImage, String corporationName, int corporationCash,State _initialState,List<Order> _orders) {
+    public Corporation(double x, double y, Image corporationImage, String corporationName, int corporationCash,State state,List<Order> _orders) {
         super(x, y);
         this.corporationImage = corporationImage;
         this.corporationName = corporationName;
         this.corporationCash = corporationCash;
-        this.state = _initialState;
+this.state = state;
         this._liveOrders = _orders;
     }
 
@@ -52,8 +52,8 @@ public class Corporation extends Entity {
         this.corporationName = corporationName;
     }
 
-    public void setCorporationCash(int corporationCash) {
-        this.corporationCash = corporationCash;
+    public void setCorporationCash(double corporationCash) {
+        this.corporationCash += corporationCash;
     }
 
     public Image getCorporationImage() {
@@ -65,19 +65,15 @@ public class Corporation extends Entity {
     }
 
     public String getCorporationCashString() {
-        return String.valueOf(corporationCash);
+        return String.valueOf((int)corporationCash);
     }
     public int getCorporationCashInteger() {
-        return corporationCash;
+        return (int)corporationCash;
     }
 
     private final Font boldFont = new Font("Verdana", Font.BOLD, 20);
     @Override
     public void draw(Graphics2D g2d) {
-        Position pos;
-        pos = state.getNextMove(position);
-        position.setX(pos.getIntX());
-        position.setY(pos.getIntY());
 
         g2d.setColor(Color.BLACK);
         g2d.setFont(boldFont);
@@ -98,11 +94,35 @@ public class Corporation extends Entity {
                         return false;
                     }
                 });
-    }
+        if(corporationCash > 6000){
+            g2d.setPaint(Color.WHITE);
+            g2d.fillRect(position.getIntX() + 20, position.getIntY()- 45, 16, 16);
+            g2d.setPaint(Color.YELLOW);
+            g2d.fillRect(position.getIntX() + 40, position.getIntY()- 45, 16, 16);
+            g2d.setPaint(Color.RED);
+            g2d.fillRect(position.getIntX() + 60, position.getIntY()- 45, 16, 16);
+        }
+        else if(corporationCash > 4000){
+            g2d.setPaint(Color.WHITE);
+            g2d.fillRect(position.getIntX() + 20, position.getIntY()- 45, 16, 16);
+            g2d.setPaint(Color.YELLOW);
+            g2d.fillRect(position.getIntX() + 40, position.getIntY()- 45, 16, 16);
+        }
+        else if(corporationCash > 2000){
+            g2d.setPaint(Color.WHITE);
+            g2d.fillRect(position.getIntX() + 20, position.getIntY()- 45, 16, 16);
+        }
 
+
+    }
+    private int totalStep=0;
     @Override
     public void step() {
-        state = Common.ChangeState();
+        state.getNextMove(this);
+        if(++totalStep%500 == 0){
+            state = Common.ChangeState();
+            totalStep=0;
+        }
 
     }
     // TODO

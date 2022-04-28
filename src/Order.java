@@ -12,6 +12,7 @@ public abstract class Order extends Entity {
     protected Position target;
     protected boolean completed = false;
     protected boolean sell = false;
+    protected boolean gold_order = false;
     public Country getCountry() {
         return country;
     }
@@ -19,6 +20,10 @@ public abstract class Order extends Entity {
     public boolean isCompleted() {
         return completed;
     }
+    public boolean isSell() {  return sell; }
+    public void setSell(boolean isSell) {   sell=isSell; }
+    public boolean isGoldBuyOrSellOrder() {  return gold_order; }
+    public void setGoldBuyOrSellOrder(boolean isGoldOrder) {   gold_order=isGoldOrder; }
     protected double[] getDistances(Position target, int speed) {
         // Returns an array of doubles to move orders to the target.
         // r[0] = speed on x axis
@@ -42,12 +47,14 @@ public abstract class Order extends Entity {
         if (isBuy) {
             g2d.setPaint(Color.GREEN);
         } else {
-            g2d.setPaint(Color.PINK);
+            g2d.setPaint(Color.RED);
         }
         g2d.fillOval(position.getIntX() + 2, position.getIntY() + 2, 16, 16);
         g2d.drawString(country.getCountryFL(), position.getIntX(), position.getIntY());
         g2d.setColor(Color.BLACK);
         g2d.drawString(Integer.toString(this.amount), position.getIntX() + 6, position.getIntY() + 16);
     }
+
+
     // Order is 24 x 24
 }
